@@ -6,6 +6,8 @@ import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 
+#Cancer RAG
+
 # Set up Ollama LLM
 llm = Ollama(model="qwen2:0.5b", context_window=2048,request_timeout=1000)  # or any other model you have in Ollama
 
