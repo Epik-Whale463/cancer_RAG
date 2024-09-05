@@ -1,18 +1,17 @@
-# Import necessary libraries
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, Settings
 from llama_index.core.node_parser import SentenceSplitter
-from llama_index.embeddings.ollama import OllamaEmbedding
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.ollama import Ollama
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 
 # Set up Ollama LLM
-llm = Ollama(model="qwen2:1.5b", context_window=2048)  # or any other model you have in Ollama
+llm = Ollama(model="qwen2:0.5b", context_window=2048)  # or any other model you have in Ollama
 
 # Configure LlamaIndex to use Ollama
 Settings.llm = llm
-Settings.embed_model = OllamaEmbedding(model_name="all-MiniLM-L6-v2")
+Settings.embed_model = HuggingFaceEmbedding(model_name="all-MiniLM-L6-v2")
 
 # Load documents from the './data' directory
 documents = SimpleDirectoryReader("./data").load_data()
@@ -36,5 +35,5 @@ index = VectorStoreIndex.from_documents(documents, storage_context=storage_conte
 query_engine = index.as_query_engine()
 
 # Query the index
-response = query_engine.query("What types of cancer are there?")
+response = query_engine.query("Explain about skin cancer")
 print(response)
