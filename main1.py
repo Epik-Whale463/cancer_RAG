@@ -36,5 +36,5 @@ index = VectorStoreIndex.from_documents(documents, storage_context=storage_conte
 query_engine = index.as_query_engine()
 
 # Query the index
-response = query_engine.query("Is cancer curable disease?")
+response = query_engine.query("Can cancer be cured?")
 print(response)
