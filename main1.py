@@ -1,4 +1,3 @@
-# Import necessary libraries
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, Settings
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -8,7 +7,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 
 # Set up Ollama LLM
-llm = Ollama(model="qwen2:0.5b", context_window=1024)  # or any other model you have in Ollama
+llm = Ollama(model="qwen2:0.5b", context_window=2048)  # or any other model you have in Ollama
 
 # Configure LlamaIndex to use Ollama
 Settings.llm = llm
@@ -36,5 +35,6 @@ index = VectorStoreIndex.from_documents(documents, storage_context=storage_conte
 query_engine = index.as_query_engine()
 
 # Query the index
-response = query_engine.query("Can cancer be cured?")
+response = query_engine.query("Explain about skin cancer")
+
 print(response)
