@@ -1,0 +1,89 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Information QA System</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto p-8">
+        <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+                <h1 class="text-3xl font-bold text-white mb-2">Cancer Information QA System</h1>
+                <p class="text-blue-100">Ask questions about cancer and get informed answers.</p>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <label for="query-input" class="block text-sm font-medium text-gray-700 mb-2">Your Question</label>
+                    <input type="text" id="query-input" placeholder="E.g., What are the early signs of skin cancer?" 
+                           class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <button id="submit-btn" class="w-full bg-blue-500 text-white px-4 py-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300">
+                    Ask Question
+                </button>
+                <div id="loading" class="hidden mt-4 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                    <p class="mt-2 text-gray-600">Thinking...</p>
+                </div>
+                <div id="response" class="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 hidden">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">Answer:</h2>
+                    <p id="response-text" class="text-gray-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const queryInput = document.getElementById('query-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const loading = document.getElementById('loading');
+        const response = document.getElementById('response');
+        const responseText = document.getElementById('response-text');
+
+        submitBtn.addEventListener('click', async () => {
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            loading.classList.remove('hidden');
+            response.classList.add('hidden');
+            submitBtn.disabled = true;
+
+            try {
+                const res = await fetch('/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query }),
+                });
+                const data = await res.json();
+                responseText.textContent = data.response;
+                response.classList.remove('hidden');
+            } catch (error) {
+                responseText.textContent = 'An error occurred while processing your request.';
+                response.classList.remove('hidden');
+            } finally {
+                loading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+
+        queryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+from flask import Flask, render_template, request, jsonify
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, Settings
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -6,37 +7,33 @@ import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 
-#Cancer RAG
+app = Flask(__name__)
 
 # Set up Ollama LLM
-llm = Ollama(model="qwen2:0.5b", context_window=2048,request_timeout=1000)  # or any other model you have in Ollama
+llm = Ollama(model="mistral", context_window=2048, request_timeout=1000)
 
 # Configure LlamaIndex to use Ollama
 Settings.llm = llm
 Settings.embed_model = HuggingFaceEmbedding(model_name="all-MiniLM-L6-v2")
 
-# Load documents from the './data' directory
+# Load documents and create index (this could be moved to a separate initialization function)
 documents = SimpleDirectoryReader("./data").load_data()
-
-# Parse nodes
-parser = SentenceSplitter()
-nodes = parser.get_nodes_from_documents(documents)
-
-# Create a Chroma client
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 chroma_collection = chroma_client.get_or_create_collection("cancerdb")
-
-# Construct the vector store
 vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
-
-# Create the index
 index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-
-# Create a query engine from the index
 query_engine = index.as_query_engine()
 
-# Query the index
-response = query_engine.query("Explain about skin cancer in simple terms")
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-print(response)
+@app.route('/query', methods=['POST'])
+def query():
+    user_query = request.json['query']
+    response = query_engine.query(user_query)
+    return jsonify({'response': str(response)})
+
+if __name__ == '__main__':
+    app.run(debug=True)
