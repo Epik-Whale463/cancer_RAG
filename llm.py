@@ -15,7 +15,7 @@ def initialize_index():
     global query_engine, index
     
     # Set up Ollama LLM
-    llm = Ollama(model="mistral", context_window=2048, request_timeout=1000)
+    llm = Ollama(model="qwen2:0.5b", context_window=2048, request_timeout=1000)
     
     # Configure LlamaIndex to use Ollama
     Settings.llm = llm
