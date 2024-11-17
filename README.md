@@ -95,7 +95,10 @@ cancer-rag-webapp/
    ```  
    What are the common symptoms of lung cancer?  
    ```  
-3. The application will display an AI-generated, factually accurate response based on the indexed data.  
+3. The application will display an AI-generated, factually accurate response based on the indexed data.
+
+   ![image](https://github.com/user-attachments/assets/9ae4deaa-1ada-4082-810e-2ea72a4926a0)
+
 
 ---  
 
